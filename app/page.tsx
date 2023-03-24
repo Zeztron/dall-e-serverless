@@ -1,10 +1,7 @@
-import { Inter } from 'next/font/google'
+import Images from '@/components/Images';
 
-const inter = Inter({ subsets: ['latin'] })
-
-export default function Home() {
-  return (
-    <main className="">
-    </main>
-  )
+async function HomePage() {
+  return <div className='mx-0 md:10'></div>;
 }
+
+export default HomePage;

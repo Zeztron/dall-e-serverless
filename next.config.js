@@ -4,8 +4,11 @@ const nextConfig = {
     appDir: true,
   },
   images: {
-    domains: ['links.papareact.com']
-  }
-}
+    domains: [
+      'links.papareact.com',
+      'dall-e-serverless-s3-dev.s3.amazonaws.com',
+    ],
+  },
+};
 
-module.exports = nextConfig
+module.exports = nextConfig;

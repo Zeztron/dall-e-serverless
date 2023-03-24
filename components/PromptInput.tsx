@@ -16,15 +16,25 @@ const PromptInput: React.FC = () => {
 
   const loading = isLoading || isValidating;
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const submitPrompt = async (useSuggestion?: boolean) => {
+    const inputPrompt = prompt;
+    setPrompt('');
+
+    const p = (useSuggestion ? suggestion : inputPrompt) as string;
+
     await fetch('/api/generateImage', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ prompt }),
+      body: JSON.stringify({ prompt: p }),
     }).then((res) => res.json());
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    await submitPrompt();
   };
 
   return (
@@ -59,6 +69,7 @@ const PromptInput: React.FC = () => {
         <button
           className='p-4 bg-violet-400 text-white transition-colors duration-200 font-bold disabled:text-gray-300 disabled:cursor-not-allowed disabled:bg-gray-400'
           type='button'
+          onClick={() => submitPrompt(true)}
         >
           Use Suggestion
         </button>
