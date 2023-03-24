@@ -9,6 +9,7 @@ plugins:
 provider:
   name: aws
   runtime: nodejs18.x
+  timeout: 30
 
   stage: dev
   region: us-east-1
@@ -21,9 +22,7 @@ provider:
       statements:
         - Effect: Allow
           Action:
-            - s3:PutObject
-            - s3:PutObjectAcl
-            - s3:GetObject
+            - s3:*
           Resource: arn:aws:s3:::${self.provider.environment.S3_BUCKET}/*
 
 functions:
@@ -41,6 +40,13 @@ functions:
           method: get
           path: suggestion
           cors: true
+  GenerateImage:
+    handler: src/functions/generateImage.handler
+    events:
+      - http:
+          method: post
+          path: generate
+          cors: true
 
 resources:
   Resources:
@@ -48,6 +54,7 @@ resources:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:provider.environment.S3_BUCKET}
+        AccessControl: PublicReadWrite
         CorsConfiguration:
           CorsRules:
             - AllowedOrigins:

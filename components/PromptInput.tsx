@@ -14,16 +14,36 @@ const PromptInput: React.FC = () => {
     isValidating,
   } = useSWR('/api/suggestion', fetchSuggestion, { revalidateOnFocus: false });
 
+  const loading = isLoading || isValidating;
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await fetch('/api/generateImage', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ prompt }),
+    }).then((res) => res.json());
+  };
+
   return (
     <div className='m-10'>
-      <form className='flex flex-col lg:flex-row shadow-md shadow-slate-400/10 border rounded-md lg:divide-x'>
+      <form
+        className='flex flex-col lg:flex-row shadow-md shadow-slate-400/10 border rounded-md lg:divide-x'
+        onSubmit={handleSubmit}
+      >
         <textarea
           value={prompt}
           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) =>
             setPrompt(e.target.value)
           }
           className='flex-1 p-4 outline-none rounded-md resize-none'
-          placeholder='Enter a prompt...'
+          placeholder={
+            (loading && 'ChatGPT is thinking of a suggestion...') ||
+            suggestion ||
+            'Enter your prompt here...'
+          }
         />
         <button
           type='submit'
@@ -45,10 +65,19 @@ const PromptInput: React.FC = () => {
         <button
           className='p-4 bg-white text-violet-500 border-none transition-colors duration-200 rounded-b-md md:rounded-r-md md:rounded-bl-none font-bold'
           type='button'
+          onClick={mutate}
         >
           New Suggestion
         </button>
       </form>
+      {prompt && (
+        <p className='italic pt-2 pl-2 font-light'>
+          Suggestion:{' '}
+          <span className='text-violet-500'>
+            {loading ? 'ChatGPT is thinking...' : suggestion}
+          </span>
+        </p>
+      )}
     </div>
   );
 };
