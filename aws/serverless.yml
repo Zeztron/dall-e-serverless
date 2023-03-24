@@ -1,0 +1,50 @@
+service: dall-e-serverless
+
+frameworkVersion: '3'
+
+plugins:
+  - serverless-plugin-typescript
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+  stage: dev
+  region: us-east-1
+
+  environment:
+    S3_BUCKET: dall-e-serverless-s3-${self:provider.stage}
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:PutObject
+            - s3:PutObjectAcl
+            - s3:GetObject
+          Resource: arn:aws:s3:::${self.provider.environment.S3_BUCKET}/*
+
+functions:
+  GetImages:
+    handler: src/functions/getImages.handler
+
+resources:
+  Resources:
+    DallEBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:provider.environment.S3_BUCKET}
+        CorsConfiguration:
+          CorsRules:
+            - AllowedOrigins:
+                - '*'
+              AllowedHeaders:
+                - '*'
+              AllowedMethods:
+                - GET
+                - PUT
+                - POST
+                - DELETE
+                - HEAD
+              MaxAge: 3000
