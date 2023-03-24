@@ -7,8 +7,6 @@
     "target": "es2017",
     "outDir": ".build",
     "moduleResolution": "node",
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "lib": ["es2017"],
     "rootDir": "./",
     "strict": true,

@@ -4,6 +4,7 @@ frameworkVersion: '3'
 
 plugins:
   - serverless-plugin-typescript
+  - serverless-dotenv-plugin
 
 provider:
   name: aws
@@ -28,6 +29,18 @@ provider:
 functions:
   GetImages:
     handler: src/functions/getImages.handler
+    events:
+      - http:
+          method: get
+          path: images
+          cors: true
+  GetSuggestion:
+    handler: src/functions/getSuggestion.handler
+    events:
+      - http:
+          method: get
+          path: suggestion
+          cors: true
 
 resources:
   Resources:
